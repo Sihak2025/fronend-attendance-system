@@ -16,7 +16,7 @@ import {
   Layers,
   ArrowRight,
 } from 'lucide-react';
-import TeacherSidebar from '../../components/TeacherSideBar';
+import TeacherSidebar from '../../components/TeacherSidebar';
 import { getMyClasses } from '../../service/teacherClassService';
 
 const formatTimeTo12Hour = (timeString) => {

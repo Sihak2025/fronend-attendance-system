@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState, useEffect } from 'react';
-import TeacherSidebar from '../../components/TeacherSideBar';
+import TeacherSidebar from '../../components/TeacherSidebar';
 import { getDashboardData } from '../../service/dasboardTeacherService';
 import {
   Users,

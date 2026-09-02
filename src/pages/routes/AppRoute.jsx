@@ -2,7 +2,7 @@
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminSidebar from '../../components/AdminSidebar';
-import TeacherSidebar from '../../components/TeacherSideBar';
+import TeacherSidebar from '../../components/TeacherSidebar';
 import DashboardAdmin from '../admin/DashboardAdmin';
 import DashboardTeacher from '../teacher/DashboardTeacher';
 import BuildingList from '../admin/buildings/BuildingList';
@@ -75,7 +75,10 @@ const AppRoute = () => {
           path='/teacherclasslist/teacherclasscreate'
           element={<TeacherClassCreate />}
         />
-        <Route path='/teacherclass/teacherclassupdate/:id' element={<TeacherClassUpdate/>}/>
+        <Route
+          path='/teacherclass/teacherclassupdate/:id'
+          element={<TeacherClassUpdate />}
+        />
 
         <Route
           path='/userlist'

@@ -11,7 +11,7 @@ import {
   AlertCircle,
   CheckCircle2,
 } from 'lucide-react';
-import TeacherSidebar from '../../../components/TeacherSideBar';
+import TeacherSidebar from '../../../components/TeacherSidebar';
 import { getMyClasses } from '../../../service/teacherClassService';
 import { createAttendance } from '../../../service/attendanceService';
 import api from '../../../service/api';
@@ -28,7 +28,9 @@ const TakeAttendance = () => {
   const [classInfo, setClassInfo] = useState(null);
   const [students, setStudents] = useState([]);
   const [attendanceData, setAttendanceData] = useState({});
-  const [atdDate, setAtdDate] = useState(new Date().toISOString().split('T')[0]);
+  const [atdDate, setAtdDate] = useState(
+    new Date().toISOString().split('T')[0],
+  );
 
   useEffect(() => {
     const fetchClassAndStudents = async () => {
@@ -38,7 +40,7 @@ const TakeAttendance = () => {
 
         const classes = await getMyClasses();
         const currentClass = classes.find(
-          (c) => c.id.toString() === teacherClassId.toString()
+          (c) => c.id.toString() === teacherClassId.toString(),
         );
 
         if (!currentClass) {
@@ -46,9 +48,13 @@ const TakeAttendance = () => {
         }
 
         setClassInfo(currentClass);
-        const response = await api.get(`/teacher/classes/${teacherClassId}/students`).catch(() => {
-          return api.get('/students', { params: { room_id: currentClass.room_id } });
-        });
+        const response = await api
+          .get(`/teacher/classes/${teacherClassId}/students`)
+          .catch(() => {
+            return api.get('/students', {
+              params: { room_id: currentClass.room_id },
+            });
+          });
         const roomStudents = response.data.students || response.data || [];
         setStudents(roomStudents);
 
@@ -60,9 +66,12 @@ const TakeAttendance = () => {
           };
         });
         setAttendanceData(initialAttendance);
-
       } catch (err) {
-        setError(err.response?.data?.message || err.message || 'Failed to load attendance data.');
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            'Failed to load attendance data.',
+        );
       } finally {
         setLoading(false);
       }
@@ -116,9 +125,11 @@ const TakeAttendance = () => {
       setTimeout(() => {
         navigate('/viewclass');
       }, 1500);
-
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save attendance. Please check inputs.');
+      setError(
+        err.response?.data?.message ||
+          'Failed to save attendance. Please check inputs.',
+      );
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +149,9 @@ const TakeAttendance = () => {
                 Take Attendance
               </h1>
               <p className='mt-1 text-sm text-slate-400'>
-                {classInfo ? `${classInfo.subject?.name || 'Subject'} - Room: ${classInfo.room?.room_name || classInfo.room?.name || 'N/A'}` : 'Record student presence'}
+                {classInfo
+                  ? `${classInfo.subject?.name || 'Subject'} - Room: ${classInfo.room?.room_name || classInfo.room?.name || 'N/A'}`
+                  : 'Record student presence'}
               </p>
             </div>
           </div>
@@ -170,7 +183,9 @@ const TakeAttendance = () => {
             <p className='text-slate-400'>Loading students list...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className='space-y-6'>
+          <form
+            onSubmit={handleSubmit}
+            className='space-y-6'>
             <div className='rounded-2xl border border-slate-800 bg-slate-900 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
               <div className='flex items-center gap-3'>
                 <div className='rounded-xl bg-purple-500/10 p-3 text-purple-400'>
@@ -180,7 +195,9 @@ const TakeAttendance = () => {
                   <label className='block text-xs uppercase tracking-wider text-slate-400 font-semibold'>
                     Attendance Date
                   </label>
-                  <p className='text-sm text-slate-200'>Select the date for this attendance session</p>
+                  <p className='text-sm text-slate-200'>
+                    Select the date for this attendance session
+                  </p>
                 </div>
               </div>
               <input
@@ -199,41 +216,72 @@ const TakeAttendance = () => {
                     <tr className='border-b border-slate-800 bg-slate-950/50 text-xs uppercase tracking-wider text-slate-400'>
                       <th className='py-4 px-6 font-semibold'>#</th>
                       <th className='py-4 px-6 font-semibold'>Student Name</th>
-                      <th className='py-4 px-6 font-semibold text-center'>Status</th>
-                      <th className='py-4 px-6 font-semibold'>Reason (If Permission)</th>
+                      <th className='py-4 px-6 font-semibold text-center'>
+                        Status
+                      </th>
+                      <th className='py-4 px-6 font-semibold'>
+                        Reason (If Permission)
+                      </th>
                     </tr>
                   </thead>
                   <tbody className='divide-y divide-slate-800 text-sm'>
                     {students.length === 0 ? (
                       <tr>
-                        <td colSpan='4' className='py-12 text-center text-slate-400'>
+                        <td
+                          colSpan='4'
+                          className='py-12 text-center text-slate-400'>
                           No students found in this room.
                         </td>
                       </tr>
                     ) : (
                       students.map((student, index) => {
-                        const currentStatus = attendanceData[student.id]?.status || 'Present';
+                        const currentStatus =
+                          attendanceData[student.id]?.status || 'Present';
                         return (
-                          <tr key={student.id} className='hover:bg-slate-800/50 transition'>
-                            <td className='py-4 px-6 text-slate-400 font-medium'>{index + 1}</td>
+                          <tr
+                            key={student.id}
+                            className='hover:bg-slate-800/50 transition'>
+                            <td className='py-4 px-6 text-slate-400 font-medium'>
+                              {index + 1}
+                            </td>
                             <td className='py-4 px-6 font-medium text-white'>
-                              {student.name || `${student.first_name || ''} ${student.last_name || ''}`}
+                              {student.name ||
+                                `${student.first_name || ''} ${student.last_name || ''}`}
                             </td>
                             <td className='py-4 px-6'>
                               <div className='flex items-center justify-center gap-2'>
-                                {['Present', 'Absent', 'Late', 'Permission'].map((statusOption) => {
-                                  const isActive = currentStatus === statusOption;
+                                {[
+                                  'Present',
+                                  'Absent',
+                                  'Late',
+                                  'Permission',
+                                ].map((statusOption) => {
+                                  const isActive =
+                                    currentStatus === statusOption;
                                   let activeColor = '';
-                                  if (statusOption === 'Present') activeColor = 'bg-green-600 text-white border-green-500';
-                                  if (statusOption === 'Absent') activeColor = 'bg-red-600 text-white border-red-500';
-                                  if (statusOption === 'Late') activeColor = 'bg-amber-600 text-white border-amber-500';
-                                  if (statusOption === 'Permission') activeColor = 'bg-blue-600 text-white border-blue-500';
+                                  if (statusOption === 'Present')
+                                    activeColor =
+                                      'bg-green-600 text-white border-green-500';
+                                  if (statusOption === 'Absent')
+                                    activeColor =
+                                      'bg-red-600 text-white border-red-500';
+                                  if (statusOption === 'Late')
+                                    activeColor =
+                                      'bg-amber-600 text-white border-amber-500';
+                                  if (statusOption === 'Permission')
+                                    activeColor =
+                                      'bg-blue-600 text-white border-blue-500';
 
                                   return (
                                     <button
                                       type='button'
                                       key={statusOption}
-                                      onClick={() => handleStatusChange(student.id, statusOption)}
+                                      onClick={() =>
+                                        handleStatusChange(
+                                          student.id,
+                                          statusOption,
+                                        )
+                                      }
                                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
                                         isActive
                                           ? activeColor
@@ -250,13 +298,22 @@ const TakeAttendance = () => {
                                 <input
                                   type='text'
                                   placeholder='Enter reason...'
-                                  value={attendanceData[student.id]?.reason || ''}
-                                  onChange={(e) => handleReasonChange(student.id, e.target.value)}
+                                  value={
+                                    attendanceData[student.id]?.reason || ''
+                                  }
+                                  onChange={(e) =>
+                                    handleReasonChange(
+                                      student.id,
+                                      e.target.value,
+                                    )
+                                  }
                                   required={currentStatus === 'Permission'}
                                   className='w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none'
                                 />
                               ) : (
-                                <span className='text-xs text-slate-500 italic'>Not required</span>
+                                <span className='text-xs text-slate-500 italic'>
+                                  Not required
+                                </span>
                               )}
                             </td>
                           </tr>
@@ -273,8 +330,14 @@ const TakeAttendance = () => {
                     type='submit'
                     disabled={submitting}
                     className='flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 disabled:opacity-50'>
-                    {submitting ? <Loader2 className='h-4 w-4 animate-spin' /> : <Save className='h-4 w-4' />}
-                    <span>{submitting ? 'Saving Attendance...' : 'Save Attendance'}</span>
+                    {submitting ? (
+                      <Loader2 className='h-4 w-4 animate-spin' />
+                    ) : (
+                      <Save className='h-4 w-4' />
+                    )}
+                    <span>
+                      {submitting ? 'Saving Attendance...' : 'Save Attendance'}
+                    </span>
                   </button>
                 </div>
               )}

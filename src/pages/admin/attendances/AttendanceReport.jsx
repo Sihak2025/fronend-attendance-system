@@ -21,7 +21,7 @@ const AttendanceReport = () => {
         const res = await axios.get(`${API_URL}/teachers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setTeachers(res.data.teachers || res.data);
+        setTeachers(res.data.teachers || res.data || []);
       } catch (error) {
         console.error('Error fetching teachers:', error);
       }
@@ -44,7 +44,7 @@ const AttendanceReport = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        let data = res.data.attendances || [];
+        let data = res.data.attendances || res.data || [];
         if (startDate) {
           data = data.filter((item) => item.atd_date >= startDate);
         }
@@ -85,24 +85,47 @@ const AttendanceReport = () => {
   return (
     <div className='flex min-h-screen bg-slate-50'>
       <AdminSidebar />
-      <div className='flex-1 p-8 ml-0 lg:ml-64'>
-        <div className='mb-8'>
-          <h1 className='text-2xl font-bold text-slate-800'>
-            Attendance Report
-          </h1>
-          <p className='text-sm text-slate-500 mt-1'>
-            Analyze student attendance trends, statistics, and records.
-          </p>
-        </div>
-        <div className='bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 print:hidden'>
+      <div className='flex-1 p-4 sm:p-6 lg:p-8 ml-0 lg:ml-64 overflow-y-auto pt-16 lg:pt-8'>
+        {/* Header */}
+        <div className='mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
           <div>
-            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1'>
+            <h1 className='text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight'>
+              Attendance Report
+            </h1>
+            <p className='text-xs sm:text-sm text-slate-500 mt-1'>
+              Analyze student attendance trends, statistics, and records.
+            </p>
+          </div>
+          <button
+            onClick={handlePrint}
+            className='inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm print:hidden self-start sm:self-auto'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-4 w-4'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z'
+              />
+            </svg>
+            Print Report
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div className='bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 print:hidden'>
+          <div>
+            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1.5'>
               Filter by Teacher
             </label>
             <select
               value={selectedTeacher}
               onChange={(e) => setSelectedTeacher(e.target.value)}
-              className='w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'>
+              className='w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
               <option value=''>All Teachers</option>
               {teachers.map((teacher) => (
                 <option
@@ -115,101 +138,89 @@ const AttendanceReport = () => {
           </div>
 
           <div>
-            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1'>
+            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1.5'>
               Start Date
             </label>
             <input
               type='date'
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className='w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             />
           </div>
 
           <div>
-            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1'>
+            <label className='block text-xs font-semibold text-slate-600 uppercase mb-1.5'>
               End Date
             </label>
             <input
               type='date'
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className='w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             />
           </div>
         </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8'>
-          <div className='bg-white p-5 rounded-2xl shadow-sm border border-slate-200'>
-            <p className='text-xs font-medium text-slate-400 uppercase'>
+
+        {/* Analytics Cards */}
+        <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-8'>
+          <div className='bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 col-span-2 sm:col-span-1'>
+            <p className='text-xs font-semibold text-slate-400 uppercase tracking-wider'>
               Overall Rate
             </p>
-            <h3 className='text-2xl font-bold text-slate-800 mt-1'>
+            <h3 className='text-xl sm:text-2xl font-bold text-slate-800 mt-1'>
               {attendanceRate}%
             </h3>
           </div>
-          <div className='bg-white p-5 rounded-2xl shadow-sm border border-slate-200'>
-            <p className='text-xs font-medium text-emerald-500 uppercase'>
+          <div className='bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200'>
+            <p className='text-xs font-semibold text-emerald-500 uppercase tracking-wider'>
               Present
             </p>
-            <h3 className='text-2xl font-bold text-emerald-600 mt-1'>
+            <h3 className='text-xl sm:text-2xl font-bold text-emerald-600 mt-1'>
               {presentCount}
             </h3>
           </div>
-          <div className='bg-white p-5 rounded-2xl shadow-sm border border-slate-200'>
-            <p className='text-xs font-medium text-rose-500 uppercase'>
+          <div className='bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200'>
+            <p className='text-xs font-semibold text-rose-500 uppercase tracking-wider'>
               Absent
             </p>
-            <h3 className='text-2xl font-bold text-rose-600 mt-1'>
+            <h3 className='text-xl sm:text-2xl font-bold text-rose-600 mt-1'>
               {absentCount}
             </h3>
           </div>
-          <div className='bg-white p-5 rounded-2xl shadow-sm border border-slate-200'>
-            <p className='text-xs font-medium text-amber-500 uppercase'>Late</p>
-            <h3 className='text-2xl font-bold text-amber-600 mt-1'>
+          <div className='bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200'>
+            <p className='text-xs font-semibold text-amber-500 uppercase tracking-wider'>
+              Late
+            </p>
+            <h3 className='text-xl sm:text-2xl font-bold text-amber-600 mt-1'>
               {lateCount}
             </h3>
           </div>
-          <div className='bg-white p-5 rounded-2xl shadow-sm border border-slate-200'>
-            <p className='text-xs font-medium text-sky-500 uppercase'>
+          <div className='bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 col-span-2 sm:col-span-1'>
+            <p className='text-xs font-semibold text-sky-500 uppercase tracking-wider'>
               Permission
             </p>
-            <h3 className='text-2xl font-bold text-sky-600 mt-1'>
+            <h3 className='text-xl sm:text-2xl font-bold text-sky-600 mt-1'>
               {permissionCount}
             </h3>
           </div>
         </div>
+
+        {/* Detailed Table */}
         <div className='bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden'>
-          <div className='p-4 border-b border-slate-200 flex justify-between items-center'>
+          <div className='p-4 sm:p-6 border-b border-slate-200 flex justify-between items-center'>
             <div>
-              <h2 className='font-bold text-slate-800'>
+              <h2 className='font-bold text-slate-800 text-base sm:text-lg'>
                 Detailed Report Records
               </h2>
-              <span className='text-xs text-slate-500'>
+              <span className='text-xs text-slate-500 mt-0.5 block'>
                 Total: {totalRecords} records
               </span>
             </div>
-            <button
-              onClick={handlePrint}
-              className='flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm print:hidden'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-4 w-4'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z'
-                />
-              </svg>
-              Print Report
-            </button>
           </div>
 
           <div className='overflow-x-auto'>
-            <table className='w-full text-left border-collapse'>
+            <table className='w-full text-left border-collapse min-w-[640px]'>
               <thead>
                 <tr className='bg-slate-50/70 border-b border-slate-200 text-slate-600 text-xs font-semibold uppercase tracking-wider'>
                   <th className='p-4'>Date</th>
@@ -225,7 +236,7 @@ const AttendanceReport = () => {
                   <tr>
                     <td
                       colSpan='6'
-                      className='text-center py-10 text-slate-400'>
+                      className='text-center py-10 text-slate-400 font-medium'>
                       Generating report...
                     </td>
                   </tr>
@@ -234,7 +245,7 @@ const AttendanceReport = () => {
                     <tr
                       key={item.id}
                       className='hover:bg-slate-50/60 transition-colors'>
-                      <td className='p-4 font-medium text-slate-600'>
+                      <td className='p-4 font-medium text-slate-600 whitespace-nowrap'>
                         {item.atd_date}
                       </td>
                       <td className='p-4 font-semibold text-slate-800'>
@@ -251,7 +262,7 @@ const AttendanceReport = () => {
                       <td className='p-4 text-slate-800 font-medium'>
                         {item.student?.name || 'N/A'}
                       </td>
-                      <td className='p-4'>
+                      <td className='p-4 whitespace-nowrap'>
                         <span
                           className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
                             item.status === 'Present'
@@ -284,6 +295,7 @@ const AttendanceReport = () => {
           </div>
         </div>
       </div>
+
       <style>{`
         @media print {
           aside, 

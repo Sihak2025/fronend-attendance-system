@@ -35,23 +35,23 @@ const StudentUpdate = () => {
   const fetchStudentData = async () => {
     try {
       const data = await getStudentById(id);
-      const student = data.student || data; 
+      const student = data.student || data;
       setFormData({
         name: student.name || '',
         gender: student.gender || 'Male',
         dob: student.dob || '',
         phone: student.phone || '',
         address: student.address || '',
-        image: null, 
+        image: null,
       });
       if (student.image) {
         setImagePreview(
           student.image.startsWith('http')
             ? student.image
-            : `http://127.0.0.1:8000/storage/${student.image}`
+            : `http://127.0.0.1:8000/storage/${student.image}`,
         );
       }
-    }  catch (error) {
+    } catch (error) {
       console.error('Error fetching student data for update', error);
     }
   };
@@ -76,7 +76,7 @@ const StudentUpdate = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateStudent(id,formData);
+      await updateStudent(id, formData);
       navigate('/studentlist');
     } catch (error) {
       console.error('Update student error', error);
@@ -88,31 +88,34 @@ const StudentUpdate = () => {
   return (
     <div className='min-h-screen bg-slate-50 flex'>
       <AdminSidebar />
-      <main className='flex-1 ml-110 mb-2 p-10 max-w-4xl mx-auto'>
-        <div className='flex items-center justify-between mb-8'>
+      <main className='flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pt-20 lg:pt-8 lg:ml-64 max-w-4xl mx-auto'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8'>
           <div>
-            <h1 className='text-3xl font-extrabold text-slate-900 tracking-tight'>
+            <h1 className='text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight'>
               Update Student
             </h1>
-            <p className='text-sm text-slate-500 mt-1'>
+            <p className='text-xs sm:text-sm text-slate-500 mt-1'>
               Modify the information below to update the student profile.
             </p>
           </div>
           <Link
             to='/studentlist'
-            className='inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all duration-200'>
+            className='inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all duration-200 text-xs sm:text-sm'>
             <ArrowLeft size={18} />
             <span>Back to List</span>
           </Link>
         </div>
-        <div className='bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-8'>
-          <form onSubmit={handleSubmit} className='space-y-6'>
+
+        <div className='bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-5 sm:p-8'>
+          <form
+            onSubmit={handleSubmit}
+            className='space-y-6'>
             <div className='flex flex-col items-center sm:items-start gap-4 pb-6 border-b border-slate-100'>
               <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600'>
                 Student Profile Picture
               </label>
-              <div className='flex items-center gap-6'>
-                <div className='w-24 h-24 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shadow-sm'>
+              <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-6'>
+                <div className='w-24 h-24 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shadow-sm flex-shrink-0'>
                   {imagePreview ? (
                     <img
                       src={imagePreview}
@@ -120,10 +123,13 @@ const StudentUpdate = () => {
                       className='w-full h-full object-cover'
                     />
                   ) : (
-                    <User size={36} className='text-slate-400' />
+                    <User
+                      size={36}
+                      className='text-slate-400'
+                    />
                   )}
                 </div>
-                <label className='cursor-pointer inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 transition-all duration-200 text-sm'>
+                <label className='cursor-pointer inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 transition-all duration-200 text-sm w-full sm:w-auto'>
                   <Upload size={16} />
                   <span>Choose File</span>
                   <input
@@ -135,10 +141,11 @@ const StudentUpdate = () => {
                 </label>
               </div>
             </div>
+
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div>
                 <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2'>
-                  Full Name
+                  Full Name <span className='text-rose-500'>*</span>
                 </label>
                 <div className='relative'>
                   <span className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
@@ -155,9 +162,10 @@ const StudentUpdate = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2'>
-                  Gender
+                  Gender <span className='text-rose-500'>*</span>
                 </label>
                 <select
                   name='gender'
@@ -169,6 +177,7 @@ const StudentUpdate = () => {
                   <option value='Other'>Other</option>
                 </select>
               </div>
+
               <div>
                 <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2'>
                   Date of Birth
@@ -186,6 +195,7 @@ const StudentUpdate = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2'>
                   Phone Number
@@ -205,6 +215,7 @@ const StudentUpdate = () => {
                 </div>
               </div>
             </div>
+
             <div>
               <label className='block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2'>
                 Address
@@ -222,16 +233,21 @@ const StudentUpdate = () => {
                   className='w-full pl-11 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200'></textarea>
               </div>
             </div>
-            <div className='flex items-center justify-end gap-4 pt-4 border-t border-slate-100'>
+
+            <div className='flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-slate-100'>
               <Link
                 to='/studentlist'
-                className='px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium text-sm transition-all duration-200'>
-                Cancel
+                className='w-full sm:w-auto'>
+                <button
+                  type='button'
+                  className='w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium text-sm transition-all duration-200 text-center'>
+                  Cancel
+                </button>
               </Link>
               <button
                 type='submit'
                 disabled={loading}
-                className='inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50'>
+                className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50'>
                 <Save size={18} />
                 <span>{loading ? 'Updating...' : 'Update Student'}</span>
               </button>

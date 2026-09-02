@@ -75,13 +75,13 @@ const UserUpdate = () => {
   return (
     <div className='flex min-h-screen bg-gray-50'>
       <AdminSidebar />
-      <div className='flex-1 p-8 overflow-y-auto ml-64'>
+      <div className='flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pt-20 lg:pt-8 lg:ml-64'>
         <div className='max-w-3xl mx-auto'>
-          <div className='mb-8'>
-            <h2 className='text-2xl font-extrabold text-gray-900 tracking-tight'>
+          <div className='mb-6 sm:mb-8'>
+            <h2 className='text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight'>
               Edit User
             </h2>
-            <p className='text-sm text-gray-500 mt-1'>
+            <p className='text-xs sm:text-sm text-gray-500 mt-1'>
               Update user account details and role permissions
             </p>
           </div>
@@ -92,7 +92,7 @@ const UserUpdate = () => {
             </div>
           )}
 
-          <div className='bg-white rounded-2xl shadow-sm border border-gray-100 p-8'>
+          <div className='bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8'>
             <form
               onSubmit={handleSubmit}
               className='space-y-6'>
@@ -156,17 +156,16 @@ const UserUpdate = () => {
                   placeholder='••••••••'
                 />
               </div>
-
-              <div className='flex items-center justify-end gap-4 pt-4 border-t border-gray-100'>
+              <div className='flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-gray-100'>
                 <button
                   type='button'
                   onClick={() => navigate(-1)}
-                  className='px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition'>
+                  className='w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition text-center'>
                   Cancel
                 </button>
                 <button
                   type='submit'
-                  className='px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition'>
+                  className='w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition text-center'>
                   Save Changes
                 </button>
               </div>

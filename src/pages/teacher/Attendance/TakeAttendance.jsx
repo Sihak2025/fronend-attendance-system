@@ -10,11 +10,23 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Check,
+  X,
+  Clock,
+  FileText,
+  UserCheck,
 } from 'lucide-react';
 import TeacherSidebar from '../../../components/TeacherSidebar';
 import { getMyClasses } from '../../../service/teacherClassService';
 import { createAttendance } from '../../../service/attendanceService';
 import api from '../../../service/api';
+
+const STATUS_OPTIONS = [
+  { label: 'Present', color: 'bg-emerald-600 border-emerald-500 text-white' },
+  { label: 'Absent', color: 'bg-rose-600 border-rose-500 text-white' },
+  { label: 'Late', color: 'bg-amber-600 border-amber-500 text-white' },
+  { label: 'Permission', color: 'bg-blue-600 border-blue-500 text-white' },
+];
 
 const TakeAttendance = () => {
   const { id: teacherClassId } = useParams();
@@ -39,8 +51,8 @@ const TakeAttendance = () => {
         setError(null);
 
         const classes = await getMyClasses();
-        const currentClass = classes.find(
-          (c) => c.id.toString() === teacherClassId.toString(),
+        const currentClass = classes?.find(
+          (c) => c.id.toString() === teacherClassId?.toString(),
         );
 
         if (!currentClass) {
@@ -55,7 +67,8 @@ const TakeAttendance = () => {
               params: { room_id: currentClass.room_id },
             });
           });
-        const roomStudents = response.data.students || response.data || [];
+
+        const roomStudents = response.data?.students || response.data || [];
         setStudents(roomStudents);
 
         const initialAttendance = {};
@@ -101,6 +114,20 @@ const TakeAttendance = () => {
     }));
   };
 
+  const setAllStatus = (status) => {
+    setAttendanceData((prev) => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach((id) => {
+        updated[id] = {
+          ...updated[id],
+          status,
+          reason: status !== 'Permission' ? '' : updated[id]?.reason || '',
+        };
+      });
+      return updated;
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -135,102 +162,192 @@ const TakeAttendance = () => {
     }
   };
 
+  // Helper summary calculations
+  const getCounts = () => {
+    const counts = { Present: 0, Absent: 0, Late: 0, Permission: 0 };
+    Object.values(attendanceData).forEach((item) => {
+      if (counts[item.status] !== undefined) {
+        counts[item.status]++;
+      }
+    });
+    return counts;
+  };
+
+  const summaryCounts = getCounts();
+
   return (
-    <div className='min-h-screen bg-slate-950 flex text-white'>
+    <div className='min-h-screen bg-slate-950 flex text-slate-100 font-sans selection:bg-blue-500 selection:text-white'>
       <TeacherSidebar />
-      <main className='flex-1 ml-64 p-8 max-w-7xl mx-auto'>
-        <div className='mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center'>
-          <div className='flex items-center gap-3'>
-            <div className='rounded-xl bg-blue-500/10 p-3'>
-              <ClipboardCheck className='h-8 w-8 text-blue-400' />
+      <main className='flex-1 ml-0 lg:ml-64 p-4 sm:p-8 lg:p-12 max-w-7xl mx-auto overflow-y-auto pt-20 lg:pt-12'>
+        {/* Top Header */}
+        <div className='mb-8 flex flex-col justify-between gap-6 sm:flex-row sm:items-center border-b border-slate-800/80 pb-8'>
+          <div className='flex items-center gap-4'>
+            <div className='flex h-14 w-14 min-w-[3.5rem] items-center justify-center rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400'>
+              <ClipboardCheck className='h-7 w-7' />
             </div>
             <div>
-              <h1 className='text-3xl font-bold tracking-tight text-white'>
+              <h1 className='text-2xl sm:text-3xl font-extrabold tracking-tight text-white'>
                 Take Attendance
               </h1>
-              <p className='mt-1 text-sm text-slate-400'>
+              <p className='mt-1 text-xs sm:text-sm text-slate-400'>
                 {classInfo
-                  ? `${classInfo.subject?.name || 'Subject'} - Room: ${classInfo.room?.room_name || classInfo.room?.name || 'N/A'}`
+                  ? `${classInfo.subject?.name || classInfo.subject?.subject_name || 'Subject'} — Room: ${classInfo.room?.room_name || classInfo.room?.name || 'N/A'}`
                   : 'Record student presence'}
               </p>
             </div>
           </div>
           <button
             onClick={() => navigate(-1)}
-            className='flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-2.5 text-sm font-medium transition hover:border-slate-500 hover:bg-slate-800'>
+            className='inline-flex items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-2.5 text-sm font-medium text-slate-300 transition-all duration-300 hover:border-slate-700 hover:bg-slate-800 hover:text-white self-start sm:self-auto'>
             <ArrowLeft className='h-4 w-4' />
-            Back
+            <span>Back</span>
           </button>
         </div>
 
+        {/* Error Notification */}
         {error && (
-          <div className='mb-6 flex items-center gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-red-400'>
-            <AlertCircle className='h-5 w-5 shrink-0' />
-            <p className='text-sm'>{error}</p>
+          <div className='mb-6 flex items-center gap-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-rose-400 backdrop-blur-md'>
+            <div className='p-2 rounded-xl bg-rose-500/20 shrink-0'>
+              <AlertCircle className='h-5 w-5' />
+            </div>
+            <div>
+              <p className='font-bold text-rose-300'>Error</p>
+              <p className='text-xs sm:text-sm text-rose-400/90 mt-0.5'>
+                {error}
+              </p>
+            </div>
           </div>
         )}
 
+        {/* Success Notification */}
         {successMessage && (
-          <div className='mb-6 flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-green-400'>
-            <CheckCircle2 className='h-5 w-5 shrink-0' />
-            <p className='text-sm'>{successMessage}</p>
+          <div className='mb-6 flex items-center gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-400 backdrop-blur-md'>
+            <div className='p-2 rounded-xl bg-emerald-500/20 shrink-0'>
+              <CheckCircle2 className='h-5 w-5' />
+            </div>
+            <div>
+              <p className='font-bold text-emerald-300'>Success</p>
+              <p className='text-xs sm:text-sm text-emerald-400/90 mt-0.5'>
+                {successMessage}
+              </p>
+            </div>
           </div>
         )}
 
         {loading ? (
-          <div className='flex min-h-[300px] flex-col items-center justify-center'>
+          <div className='flex min-h-[350px] flex-col items-center justify-center'>
             <Loader2 className='mb-4 h-10 w-10 animate-spin text-blue-500' />
-            <p className='text-slate-400'>Loading students list...</p>
+            <p className='text-sm text-slate-400'>Loading class roster...</p>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
             className='space-y-6'>
-            <div className='rounded-2xl border border-slate-800 bg-slate-900 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-              <div className='flex items-center gap-3'>
-                <div className='rounded-xl bg-purple-500/10 p-3 text-purple-400'>
-                  <Calendar className='h-5 w-5' />
+            {/* Control Panel: Date selection & Quick actions */}
+            <div className='rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 backdrop-blur-xl flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between'>
+              <div className='flex items-center gap-4'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 shrink-0'>
+                  <Calendar className='h-6 w-6' />
                 </div>
                 <div>
-                  <label className='block text-xs uppercase tracking-wider text-slate-400 font-semibold'>
+                  <label className='block text-xs font-bold uppercase tracking-wider text-slate-400'>
                     Attendance Date
                   </label>
-                  <p className='text-sm text-slate-200'>
-                    Select the date for this attendance session
-                  </p>
+                  <input
+                    type='date'
+                    value={atdDate}
+                    onChange={(e) => setAtdDate(e.target.value)}
+                    required
+                    className='mt-1 rounded-xl border border-slate-700/80 bg-slate-950 px-3.5 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition'
+                  />
                 </div>
               </div>
-              <input
-                type='date'
-                value={atdDate}
-                onChange={(e) => setAtdDate(e.target.value)}
-                required
-                className='rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none'
-              />
+
+              {/* Batch Quick Actions & Live Summary */}
+              {students.length > 0 && (
+                <div className='flex flex-wrap items-center gap-3 pt-4 border-t border-slate-800/60 lg:pt-0 lg:border-t-0'>
+                  <span className='text-xs text-slate-400 font-medium mr-1 hidden sm:inline'>
+                    Quick Actions:
+                  </span>
+                  <button
+                    type='button'
+                    onClick={() => setAllStatus('Present')}
+                    className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition'>
+                    <Check className='h-3.5 w-3.5' /> All Present
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => setAllStatus('Absent')}
+                    className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-xs font-semibold text-rose-400 hover:bg-rose-500/20 transition'>
+                    <X className='h-3.5 w-3.5' /> All Absent
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className='rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden shadow-xl'>
+            {/* Live Count Overview Chips */}
+            {students.length > 0 && (
+              <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
+                <div className='rounded-2xl border border-slate-800/80 bg-slate-900/40 p-3.5 flex items-center justify-between'>
+                  <span className='text-xs text-emerald-400 font-medium flex items-center gap-1.5'>
+                    <UserCheck className='h-4 w-4' /> Present
+                  </span>
+                  <span className='text-base font-bold text-emerald-400'>
+                    {summaryCounts.Present}
+                  </span>
+                </div>
+                <div className='rounded-2xl border border-slate-800/80 bg-slate-900/40 p-3.5 flex items-center justify-between'>
+                  <span className='text-xs text-rose-400 font-medium flex items-center gap-1.5'>
+                    <X className='h-4 w-4' /> Absent
+                  </span>
+                  <span className='text-base font-bold text-rose-400'>
+                    {summaryCounts.Absent}
+                  </span>
+                </div>
+                <div className='rounded-2xl border border-slate-800/80 bg-slate-900/40 p-3.5 flex items-center justify-between'>
+                  <span className='text-xs text-amber-400 font-medium flex items-center gap-1.5'>
+                    <Clock className='h-4 w-4' /> Late
+                  </span>
+                  <span className='text-base font-bold text-amber-400'>
+                    {summaryCounts.Late}
+                  </span>
+                </div>
+                <div className='rounded-2xl border border-slate-800/80 bg-slate-900/40 p-3.5 flex items-center justify-between'>
+                  <span className='text-xs text-blue-400 font-medium flex items-center gap-1.5'>
+                    <FileText className='h-4 w-4' /> Permission
+                  </span>
+                  <span className='text-base font-bold text-blue-400'>
+                    {summaryCounts.Permission}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Students Table */}
+            <div className='overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-xl shadow-2xl'>
               <div className='overflow-x-auto'>
                 <table className='w-full text-left border-collapse'>
                   <thead>
-                    <tr className='border-b border-slate-800 bg-slate-950/50 text-xs uppercase tracking-wider text-slate-400'>
-                      <th className='py-4 px-6 font-semibold'>#</th>
-                      <th className='py-4 px-6 font-semibold'>Student Name</th>
-                      <th className='py-4 px-6 font-semibold text-center'>
-                        Status
+                    <tr className='border-b border-slate-800/80 bg-slate-950/60 text-[11px] uppercase tracking-wider text-slate-400'>
+                      <th className='py-4 px-6 font-semibold w-12'>#</th>
+                      <th className='py-4 px-6 font-semibold min-w-[180px]'>
+                        Student Name
                       </th>
-                      <th className='py-4 px-6 font-semibold'>
-                        Reason (If Permission)
+                      <th className='py-4 px-6 font-semibold text-center min-w-[320px]'>
+                        Status Selection
+                      </th>
+                      <th className='py-4 px-6 font-semibold min-w-[220px]'>
+                        Reason (Required for Permission)
                       </th>
                     </tr>
                   </thead>
-                  <tbody className='divide-y divide-slate-800 text-sm'>
+                  <tbody className='divide-y divide-slate-800/60 text-sm'>
                     {students.length === 0 ? (
                       <tr>
                         <td
                           colSpan='4'
-                          className='py-12 text-center text-slate-400'>
-                          No students found in this room.
+                          className='py-16 text-center text-slate-400'>
+                          No students currently enrolled in this class/room.
                         </td>
                       </tr>
                     ) : (
@@ -240,54 +357,35 @@ const TakeAttendance = () => {
                         return (
                           <tr
                             key={student.id}
-                            className='hover:bg-slate-800/50 transition'>
-                            <td className='py-4 px-6 text-slate-400 font-medium'>
+                            className='hover:bg-slate-800/40 transition-colors'>
+                            <td className='py-4 px-6 text-slate-500 font-semibold'>
                               {index + 1}
                             </td>
-                            <td className='py-4 px-6 font-medium text-white'>
+                            <td className='py-4 px-6 font-semibold text-slate-100'>
                               {student.name ||
-                                `${student.first_name || ''} ${student.last_name || ''}`}
+                                `${student.first_name || ''} ${student.last_name || ''}`.trim() ||
+                                `Student #${student.id}`}
                             </td>
                             <td className='py-4 px-6'>
-                              <div className='flex items-center justify-center gap-2'>
-                                {[
-                                  'Present',
-                                  'Absent',
-                                  'Late',
-                                  'Permission',
-                                ].map((statusOption) => {
-                                  const isActive =
-                                    currentStatus === statusOption;
-                                  let activeColor = '';
-                                  if (statusOption === 'Present')
-                                    activeColor =
-                                      'bg-green-600 text-white border-green-500';
-                                  if (statusOption === 'Absent')
-                                    activeColor =
-                                      'bg-red-600 text-white border-red-500';
-                                  if (statusOption === 'Late')
-                                    activeColor =
-                                      'bg-amber-600 text-white border-amber-500';
-                                  if (statusOption === 'Permission')
-                                    activeColor =
-                                      'bg-blue-600 text-white border-blue-500';
-
+                              <div className='flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap'>
+                                {STATUS_OPTIONS.map((opt) => {
+                                  const isActive = currentStatus === opt.label;
                                   return (
                                     <button
                                       type='button'
-                                      key={statusOption}
+                                      key={opt.label}
                                       onClick={() =>
                                         handleStatusChange(
                                           student.id,
-                                          statusOption,
+                                          opt.label,
                                         )
                                       }
-                                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all duration-200 active:scale-95 ${
                                         isActive
-                                          ? activeColor
-                                          : 'border-slate-700 bg-slate-800 text-slate-400 hover:border-slate-600'
+                                          ? opt.color + ' shadow-md'
+                                          : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                                       }`}>
-                                      {statusOption}
+                                      {opt.label}
                                     </button>
                                   );
                                 })}
@@ -297,7 +395,7 @@ const TakeAttendance = () => {
                               {currentStatus === 'Permission' ? (
                                 <input
                                   type='text'
-                                  placeholder='Enter reason...'
+                                  placeholder='Specify reason...'
                                   value={
                                     attendanceData[student.id]?.reason || ''
                                   }
@@ -308,11 +406,11 @@ const TakeAttendance = () => {
                                     )
                                   }
                                   required={currentStatus === 'Permission'}
-                                  className='w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none'
+                                  className='w-full rounded-xl border border-blue-500/40 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition'
                                 />
                               ) : (
-                                <span className='text-xs text-slate-500 italic'>
-                                  Not required
+                                <span className='text-xs text-slate-600 italic select-none'>
+                                  N/A
                                 </span>
                               )}
                             </td>
@@ -325,18 +423,24 @@ const TakeAttendance = () => {
               </div>
 
               {students.length > 0 && (
-                <div className='p-6 border-t border-slate-800 bg-slate-950/30 flex justify-end'>
+                <div className='p-6 border-t border-slate-800/80 bg-slate-950/50 flex items-center justify-between flex-wrap gap-4'>
+                  <p className='text-xs text-slate-400'>
+                    Total roster count:{' '}
+                    <strong className='text-slate-200 font-bold'>
+                      {students.length}
+                    </strong>
+                  </p>
                   <button
                     type='submit'
                     disabled={submitting}
-                    className='flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 disabled:opacity-50'>
+                    className='inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:bg-blue-500 active:scale-95 disabled:opacity-50 min-w-[160px]'>
                     {submitting ? (
                       <Loader2 className='h-4 w-4 animate-spin' />
                     ) : (
                       <Save className='h-4 w-4' />
                     )}
                     <span>
-                      {submitting ? 'Saving Attendance...' : 'Save Attendance'}
+                      {submitting ? 'Submitting...' : 'Save Attendance'}
                     </span>
                   </button>
                 </div>

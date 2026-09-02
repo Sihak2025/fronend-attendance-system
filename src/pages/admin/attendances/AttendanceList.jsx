@@ -10,12 +10,11 @@ const AttendanceList = () => {
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
         const res = await api.get('/teachers');
-        setTeachers(res.data.teachers || res.data);
+        setTeachers(res.data.teachers || res.data || []);
       } catch (error) {
         console.error('Error fetching teachers:', error);
       }
@@ -31,8 +30,8 @@ const AttendanceList = () => {
           ? `/attendances?teacher_id=${selectedTeacher}`
           : '/attendances';
 
-        const res = await api.get(endpoint); 
-        setAttendances(res.data.attendances);
+        const res = await api.get(endpoint);
+        setAttendances(res.data.attendances || res.data || []);
       } catch (error) {
         console.error('Error fetching attendances:', error);
       } finally {
@@ -46,22 +45,23 @@ const AttendanceList = () => {
   return (
     <div className='flex min-h-screen bg-slate-50'>
       <AdminSidebar />
-      <div className='flex-1 p-8 ml-0 lg:ml-64'>
-        <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4'>
+      <div className='flex-1 p-4 sm:p-6 lg:p-8 ml-0 lg:ml-64 overflow-y-auto pt-16 lg:pt-8'>
+        {/* Header & Filter Section */}
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4'>
           <div>
-            <h1 className='text-2xl font-bold text-slate-800'>
+            <h1 className='text-xl sm:text-2xl font-bold text-slate-800'>
               Teacher Attendance Management
             </h1>
-            <p className='text-sm text-slate-500 mt-1'>
+            <p className='text-xs sm:text-sm text-slate-500 mt-1'>
               Monitor and filter student attendances recorded by teachers.
             </p>
           </div>
-          <div className='flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm'>
+          <div className='flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm self-start sm:self-auto w-full sm:w-auto'>
             <span className='text-sm font-medium text-slate-600'>Filter:</span>
             <select
               value={selectedTeacher}
               onChange={(e) => setSelectedTeacher(e.target.value)}
-              className='bg-transparent text-sm font-medium text-slate-800 focus:outline-none cursor-pointer'>
+              className='bg-transparent text-sm font-medium text-slate-800 focus:outline-none cursor-pointer w-full sm:w-auto'>
               <option value=''>All Teachers</option>
               {teachers.map((teacher) => (
                 <option
@@ -73,9 +73,11 @@ const AttendanceList = () => {
             </select>
           </div>
         </div>
+
+        {/* Table Container */}
         <div className='bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden'>
           <div className='overflow-x-auto'>
-            <table className='w-full text-left border-collapse'>
+            <table className='w-full text-left border-collapse min-w-[640px]'>
               <thead>
                 <tr className='bg-slate-50/70 border-b border-slate-200 text-slate-600 text-xs font-semibold uppercase tracking-wider'>
                   <th className='p-4'>Date</th>
@@ -91,7 +93,7 @@ const AttendanceList = () => {
                   <tr>
                     <td
                       colSpan='6'
-                      className='text-center py-10 text-slate-400'>
+                      className='text-center py-10 text-slate-400 font-medium'>
                       Loading attendances...
                     </td>
                   </tr>
@@ -100,7 +102,7 @@ const AttendanceList = () => {
                     <tr
                       key={item.id}
                       className='hover:bg-slate-50/60 transition-colors'>
-                      <td className='p-4 font-medium text-slate-600'>
+                      <td className='p-4 font-medium text-slate-600 whitespace-nowrap'>
                         {item.atd_date}
                       </td>
                       <td className='p-4 font-semibold text-slate-800'>
@@ -117,7 +119,7 @@ const AttendanceList = () => {
                       <td className='p-4 text-slate-800 font-medium'>
                         {item.student?.name || 'N/A'}
                       </td>
-                      <td className='p-4'>
+                      <td className='p-4 whitespace-nowrap'>
                         <span
                           className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
                             item.status === 'Present'

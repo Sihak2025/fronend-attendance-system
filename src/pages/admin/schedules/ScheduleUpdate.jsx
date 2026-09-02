@@ -33,13 +33,13 @@ const ScheduleUpdate = () => {
   const fetchScheduleDetails = async () => {
     try {
       const data = await getScheduleById(id);
-      const schedule = data.schedule || data;
+      const schedule = data?.schedule || data || {};
       setFormData({
         day_of_week_start: schedule.day_of_week_start || '',
         day_of_week_end: schedule.day_of_week_end || '',
         start_time: schedule.start_time || '',
         end_time: schedule.end_time || '',
-        session: schedule.session || '',  
+        session: schedule.session || '',
       });
     } catch (err) {
       console.error('Get schedule details error', err);
@@ -54,7 +54,6 @@ const ScheduleUpdate = () => {
       navigate('/schedulelist');
     } catch (error) {
       console.error('update schedule fail..!', error);
-    } finally {
       setLoading(false);
     }
   };
@@ -62,24 +61,25 @@ const ScheduleUpdate = () => {
   return (
     <div className='min-h-screen bg-slate-50 flex'>
       <AdminSidebar />
-      <main className='flex-1 ml-110 mb-2 p-10 max-w-4xl mx-auto'>
-        <div className='flex items-center justify-between mb-8'>
+      <main className='flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pt-20 lg:pt-8 lg:ml-64 max-w-4xl mx-auto'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8'>
           <div>
-            <h1 className='text-3xl font-extrabold text-slate-900 tracking-tight'>
+            <h1 className='text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight'>
               Update Schedule
             </h1>
-            <p className='text-sm text-slate-500 mt-1'>
+            <p className='text-xs sm:text-sm text-slate-500 mt-1'>
               Modify the information below to update the schedule.
             </p>
           </div>
           <Link
             to='/schedulelist'
-            className='inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all duration-200'>
+            className='inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all duration-200 text-xs sm:text-sm'>
             <ArrowLeft size={18} />
             <span>Back to List</span>
           </Link>
         </div>
-        <div className='bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-8'>
+
+        <div className='bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-5 sm:p-8'>
           <form
             onSubmit={updateSchedules}
             className='space-y-6'>
@@ -196,18 +196,22 @@ const ScheduleUpdate = () => {
               </div>
             </div>
 
-            <div className='flex items-center justify-end gap-4 pt-4 border-t border-slate-100'>
+            <div className='flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-slate-100'>
               <Link
                 to='/schedulelist'
-                className='px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium text-sm transition-all duration-200'>
-                Cancel
+                className='w-full sm:w-auto'>
+                <button
+                  type='button'
+                  className='w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-medium text-sm transition-all duration-200 text-center'>
+                  Cancel
+                </button>
               </Link>
               <button
                 type='submit'
                 disabled={loading}
-                className='inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50'>
+                className='w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50'>
                 <Save size={18} />
-                <span>{loading ? 'Saving...' : 'Save Schedule'}</span>
+                <span>{loading ? 'Saving...' : 'Update Schedule'}</span>
               </button>
             </div>
           </form>

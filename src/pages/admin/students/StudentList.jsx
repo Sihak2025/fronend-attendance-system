@@ -32,7 +32,7 @@ const StudentList = () => {
   };
 
   const deleteStudents = async (id) => {
-    if (!confirm('Do you want to delete this student?')) {
+    if (!window.confirm('Do you want to delete this student?')) {
       return;
     }
     try {
@@ -42,6 +42,7 @@ const StudentList = () => {
       console.error('Delete student error', error);
     }
   };
+
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,25 +52,26 @@ const StudentList = () => {
   return (
     <div className='min-h-screen bg-slate-50 flex'>
       <AdminSidebar />
-      <main className='flex-1 ml-64 p-10 max-w-7xl mx-auto'>
-        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8'>
+      <main className='flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pt-20 lg:pt-8 lg:ml-64 max-w-7xl mx-auto'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8'>
           <div>
-            <h1 className='text-3xl font-extrabold text-slate-900 tracking-tight'>
+            <h1 className='text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight'>
               Student Management
             </h1>
-            <p className='text-sm text-slate-500 mt-1'>
+            <p className='text-xs sm:text-sm text-slate-500 mt-1'>
               Manage student profiles, personal information, and contacts.
             </p>
           </div>
           <Link
             to='/student/studentcreate'
-            className='inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-all duration-200'>
+            className='inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-all duration-200 text-xs sm:text-sm'>
             <Plus size={18} />
             <span>Add New Student</span>
           </Link>
         </div>
+
         <div className='bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden'>
-          <div className='p-6 border-b border-slate-100 flex items-center justify-between gap-4'>
+          <div className='p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between gap-4'>
             <div className='relative w-full max-w-md'>
               <span className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
                 <Search size={18} />
@@ -83,8 +85,9 @@ const StudentList = () => {
               />
             </div>
           </div>
+
           <div className='overflow-x-auto'>
-            <table className='w-full text-left border-collapse'>
+            <table className='w-full text-left border-collapse min-w-[750px]'>
               <thead>
                 <tr className='bg-slate-50/75 border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-500'>
                   <th className='py-4 px-6'>Student</th>
@@ -107,19 +110,21 @@ const StudentList = () => {
                           <img
                             src={`http://127.0.0.1:8000/storage/${student.image}`}
                             alt={student.name}
-                            className='w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm'
+                            className='w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm flex-shrink-0'
                           />
                         ) : (
-                          <div className='w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold'>
+                          <div className='w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold flex-shrink-0'>
                             {student.name.charAt(0)}
                           </div>
                         )}
-                        <span className='font-semibold text-slate-800'>
+                        <span className='font-semibold text-slate-800 whitespace-nowrap'>
                           {student.name}
                         </span>
                       </td>
-                      <td className='py-4 px-6'>{student.room?.room_name}</td>
-                      <td className='py-4 px-6'>
+                      <td className='py-4 px-6 whitespace-nowrap'>
+                        {student.room?.room_name}
+                      </td>
+                      <td className='py-4 px-6 whitespace-nowrap'>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold inline-block ${
                             student.gender === 'Male'
@@ -129,34 +134,34 @@ const StudentList = () => {
                           {student.gender}
                         </span>
                       </td>
-                      <td className='py-4 px-6'>
+                      <td className='py-4 px-6 whitespace-nowrap'>
                         <span className='inline-flex items-center gap-1.5 text-slate-600'>
                           <Calendar
                             size={15}
-                            className='text-slate-400'
+                            className='text-slate-400 flex-shrink-0'
                           />
                           {student.dob}
                         </span>
                       </td>
-                      <td className='py-4 px-6'>
+                      <td className='py-4 px-6 whitespace-nowrap'>
                         <span className='inline-flex items-center gap-1.5 text-slate-600'>
                           <Phone
                             size={15}
-                            className='text-slate-400'
+                            className='text-slate-400 flex-shrink-0'
                           />
                           {student.phone}
                         </span>
                       </td>
-                      <td className='py-4 px-6'>
+                      <td className='py-4 px-6 whitespace-nowrap'>
                         <span className='inline-flex items-center gap-1.5 text-slate-600'>
                           <MapPin
                             size={15}
-                            className='text-slate-400'
+                            className='text-slate-400 flex-shrink-0'
                           />
                           {student.address}
                         </span>
                       </td>
-                      <td className='py-4 px-6 text-right space-x-2'>
+                      <td className='py-4 px-6 text-right space-x-2 whitespace-nowrap'>
                         <Link
                           to={`/student/studentupdate/${student.id}`}
                           className='inline-flex p-2 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-lg border border-slate-200 transition-all'>

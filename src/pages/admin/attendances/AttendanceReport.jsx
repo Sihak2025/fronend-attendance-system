@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 
 const AttendanceReport = () => {
   const [attendances, setAttendances] = useState([]);

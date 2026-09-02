@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { createBuildings } from '../../../service/buildingService';
 
 const BuildingCreate = () => {

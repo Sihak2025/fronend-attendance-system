@@ -13,7 +13,7 @@ import {
   Layers,
   Loader2,
 } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import {
   getTeacherClassById,
   updateTeacherClass,

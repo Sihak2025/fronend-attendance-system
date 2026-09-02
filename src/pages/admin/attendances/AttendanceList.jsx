@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '../../../service/api';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 
 const AttendanceList = () => {
   const [teachers, setTeachers] = useState([]);

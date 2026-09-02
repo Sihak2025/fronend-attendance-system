@@ -1,7 +1,7 @@
 /** @format */
 
 import { Routes, Route, Navigate } from 'react-router-dom';
-import AdminSidebar from '../../components/AdminSideBar';
+import AdminSidebar from '../../components/AdminSidebar';
 import TeacherSidebar from '../../components/TeacherSideBar';
 import DashboardAdmin from '../admin/DashboardAdmin';
 import DashboardTeacher from '../teacher/DashboardTeacher';
@@ -28,7 +28,7 @@ import ScheduleCreate from '../admin/schedules/ScheduleCreate';
 import ScheduleUpdate from '../admin/schedules/ScheduleUpdate';
 import AttendanceList from '../admin/attendances/AttendanceList';
 import Userlist from '../admin/users/Userlist';
-import UserUpdate from '../admin/users/Userupdate';
+import UserUpdate from '../admin/users/UserUpdate';
 import ViewClass from '../teacher/ViewClass';
 import TeacherClassList from '../admin/manageTeacherClass/TeacherClassList';
 import TeacherClassCreate from '../admin/manageTeacherClass/TeacherClassCreate';

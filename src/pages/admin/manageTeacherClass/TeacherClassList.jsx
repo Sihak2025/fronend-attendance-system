@@ -6,7 +6,7 @@ import {
   getMyClasses,
   deleteTeacherClass,
 } from '../../../service/teacherClassService';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

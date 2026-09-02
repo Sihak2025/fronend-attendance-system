@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Layers, FileText, Save } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { createSubject } from '../../../service/subjectService';
 const SubjectCreate = () => {
   const navigate = useNavigate();

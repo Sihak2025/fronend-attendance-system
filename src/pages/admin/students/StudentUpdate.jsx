@@ -11,7 +11,7 @@ import {
   Save,
   Upload,
 } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { getStudentById, updateStudent } from '../../../service/studentService';
 
 const StudentUpdate = () => {

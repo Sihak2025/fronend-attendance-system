@@ -5,7 +5,7 @@ import { ArrowLeft, BookOpen, Layers, FileText, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import { getSubjectbyId, updateSubject } from '../../../service/subjectService';
 

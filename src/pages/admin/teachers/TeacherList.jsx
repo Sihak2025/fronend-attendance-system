@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getTeachers, deleteTeacher } from '../../../service/teacherService';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 
 const TeacherList = () => {

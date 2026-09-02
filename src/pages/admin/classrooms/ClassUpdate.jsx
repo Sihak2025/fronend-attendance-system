@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 import { getBuildings } from '../../../service/buildingService';
 import { updateRooms } from '../../../service/classService';
 import { getRoomById } from '../../../service/classService';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 
 

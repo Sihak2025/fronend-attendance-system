@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useState } from 'react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { ArrowLeft, Calendar, Clock, Save, Layers } from 'lucide-react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import {

@@ -12,7 +12,7 @@ import {
   Upload,
   DoorOpen,
 } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { createStudent } from '../../../service/studentService';
 import { getRooms } from '../../../service/classService';
 

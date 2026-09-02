@@ -11,7 +11,7 @@ import {
   MapPin,
   Calendar,
 } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { getStudents, deleteStudent } from '../../../service/studentService';
 
 const StudentList = () => {

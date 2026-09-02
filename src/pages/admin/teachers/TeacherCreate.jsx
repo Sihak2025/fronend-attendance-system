@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { User, Phone, MapPin, ArrowLeft, Save, Users } from 'lucide-react';
 import { createTeachers } from '../../../service/teacherService';
 import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 
 const TeacherCreate = () => {

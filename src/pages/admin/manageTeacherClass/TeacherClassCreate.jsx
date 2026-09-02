@@ -12,7 +12,7 @@ import {
   UserCheck,
   Layers,
 } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { createTeacherClass } from '../../../service/teacherClassService';
 import { getTeachers } from '../../../service/teacherService';
 import { getRooms } from '../../../service/classService';

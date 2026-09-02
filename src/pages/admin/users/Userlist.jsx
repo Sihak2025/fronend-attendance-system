@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getUsers, deleteUser } from '../../../service/userService';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 
 const Userlist = () => {

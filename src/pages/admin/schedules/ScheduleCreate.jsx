@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Calendar, Clock, Save, ArrowLeft, Layers } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { createSchedule } from '../../../service/scheduleService';
 
 const ScheduleCreate = () => {

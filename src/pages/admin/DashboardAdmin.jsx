@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState, useEffect } from 'react';
-import AdminSidebar from '../../components/AdminSideBar';
+import AdminSidebar from '../../components/AdminSidebar';
 import {
   Users,
   UserCheck,

@@ -4,7 +4,7 @@ import { getBuildingById, updateBuildings } from "../../../service/buildingServi
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminSidebar from "../../../components/AdminSideBar";
+import AdminSidebar from "../../../components/AdminSidebar";
 import { useEffect } from "react";
 
 

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus, Edit, Trash2, Calendar, Clock } from 'lucide-react';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 import { getSchedules, deleteSchedule } from '../../../service/scheduleService';
 
 const ScheduleList = () => {

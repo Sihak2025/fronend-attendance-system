@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Phone, Save, User, Users } from 'lucide-react';
 import { getTeacherById, updateTeacher } from '../../../service/teacherService';
-import AdminSidebar from '../../../components/AdminSideBar';
+import AdminSidebar from '../../../components/AdminSidebar';
 
 const TeacherUpdate = () => {
   const { id } = useParams();
